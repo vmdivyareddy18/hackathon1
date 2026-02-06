@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>QuickPay – Send Money</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: #fff;
+            width: 350px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #4facfe;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4facfe;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #00c6fb;
+        }
+
+        .success {
+            margin-top: 15px;
+            text-align: center;
+            color: green;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h2>💸 QuickPay</h2>
+
+        <label>Receiver Name</label>
+        <input type="text" id="name" placeholder="Enter name">
+
+        <label>UPI ID / Account Number</label>
+        <input type="text" id="upi" placeholder="example@upi">
+
+        <label>Amount (₹)</label>
+        <input type="number" id="amount" placeholder="Enter amount">
+
+        <button onclick="sendMoney()">Send Money</button>
+
+        <div class="success" id="successMsg">
+            ✅ Money Sent Successfully!
+        </div>
+    </div>
+
+    <script>
+        function sendMoney() {
+            let name = document.getElementById("name").value;
+            let upi = document.getElementById("upi").value;
+            let amount = document.getElementById("amount").value;
+
+            if (name === "" || upi === "" || amount === "") {
+                alert("Please fill all details");
+                return;
+            }
+
+            document.getElementById("successMsg").style.display = "block";
+        }
+    </script>
+
+</body>
+
+</html>
