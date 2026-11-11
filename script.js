@@ -42,8 +42,20 @@ function saveTasks() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 }
 
+function getSafeText(value) {
+    return typeof value === 'string' ? value : '';
+}
+
+function generateTaskId() {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+    }
+
+    return `task-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
 function getPriorityClass(priority) {
-    return priority.toLowerCase();
+    return String(priority || 'medium').toLowerCase();
 }
 
 function formatDate(dateString) {
@@ -108,10 +120,13 @@ function getFilteredTasks() {
     const priorityValue = priorityFilter.value;
 
     return tasks.filter((task) => {
+        const taskTitle = getSafeText(task.title);
+        const taskDescription = getSafeText(task.description);
+
         const matchesSearch =
             !searchValue ||
-            task.title.toLowerCase().includes(searchValue) ||
-            task.description.toLowerCase().includes(searchValue);
+            taskTitle.toLowerCase().includes(searchValue) ||
+            taskDescription.toLowerCase().includes(searchValue);
 
         const matchesStatus =
             statusValue === 'all' ||
@@ -140,9 +155,12 @@ function renderTasks() {
         .map((task) => {
             const status = getTaskStatus(task);
             const dueDateText = formatDate(task.dueDate);
+            const title = getSafeText(task.title) || 'Untitled task';
+            const description = getSafeText(task.description);
+            const priority = String(task.priority || 'Medium');
 
             return `
-        <article class="task-card ${task.completed ? 'completed' : ''} priority-${getPriorityClass(task.priority)}">
+        <article class="task-card ${task.completed ? 'completed' : ''} priority-${getPriorityClass(priority)}">
           <div class="task-main">
             <div class="task-heading">
               <button
@@ -156,13 +174,13 @@ function renderTasks() {
               </button>
 
               <div>
-                <h3>${task.title}</h3>
-                ${task.description ? `<p class="task-description">${task.description}</p>` : ''}
+                <h3>${title}</h3>
+                ${description ? `<p class="task-description">${description}</p>` : ''}
               </div>
             </div>
 
             <div class="task-meta">
-              <span class="badge priority ${getPriorityClass(task.priority)}">${task.priority}</span>
+              <span class="badge priority ${getPriorityClass(priority)}">${priority}</span>
               <span class="badge status ${status}">${status === 'completed' ? 'Completed' : status === 'overdue' ? 'Overdue' : 'Pending'}</span>
               <span class="badge date">${dueDateText}</span>
             </div>
@@ -197,7 +215,7 @@ function createTask(event) {
     }
 
     const taskData = {
-        id: crypto.randomUUID(),
+        id: generateTaskId(),
         title,
         description,
         dueDate,
